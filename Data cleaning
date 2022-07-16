@@ -1,0 +1,140 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+%matplotlib inline
+data = pd.read_csv("/content/Predective Analysis of Customer Support.xlsx - ORC2.0 Report.csv")
+data.shape
+(149, 25)
+data.columns
+Index(['Project Type', 'Severity of Problem', 'Warrantable/Non Warrantable',
+       'Type of ORC', 'Failure Date', 'Problem Definition (Step-1)',
+       'Observations (Step-2)', 'System', 'Sub System',
+       'Under Analysis (Step-3)', 'Solution Identification & Release (Step-4)',
+       'Solution Validation & ORC Closure (Step-5)',
+       'Solution Implementation (Step-6)', 'Conclusion and Tracking (Step 7)',
+       'ORC Current Status', 'Date of ORC Creation', 'Date to reach at Step 2',
+       'Date to reach at Step 3', 'Date to reach at Step 4',
+       'Date to reach at Step 5', 'Date to reach at Step 6',
+       'Date to reach at Step 7', 'Time to Solution Release (days)',
+       'Time to Close the ORC (days)', 'Remarks'],
+      dtype='object')
+data.head()
+Project Type	Severity of Problem	Warrantable/Non Warrantable	Type of ORC	Failure Date	Problem Definition (Step-1)	Observations (Step-2)	System	Sub System	Under Analysis (Step-3)	...	Date of ORC Creation	Date to reach at Step 2	Date to reach at Step 3	Date to reach at Step 4	Date to reach at Step 5	Date to reach at Step 6	Date to reach at Step 7	Time to Solution Release (days)	Time to Close the ORC (days)	Remarks
+0	Regular	4	Non Warrantable	Track	27-Dec-2020 17:49	feed pump is fouling with Hood	feed pump is fouling with Hood	Engine	NaN	The Feed Pump position is not changed with res...	...	30-Dec-2020 17:49	30-Dec-2020 17:50	31-Dec-2020 13:11	13-Jan-2021 16:23	19-Jan-2021 21:06	NaN	04-Feb-2021 14:48	20.0	36.0	Based on COE remarks Orc has been Closed
+1	Regular	5	Non Warrantable	Build	16-04-2021 12:00:00 AM	IN YUV NXT EXPORT TRACTOR BUILD, AUX VALVE HOS...	NaN	Hydraulic	HYDRAULIC LINES-FD0310	IN DRAWING HOSE LENGTH WAS NOT AS PER 3D MODEL.	...	17-May-2021 23:42	18-May-2021 02:10	19-May-2021 13:00	28-May-2021 09:43	31-May-2021 11:48	17-Jun-2021 09:02	NaN	14.0	NaN	As per COE comment hose length corrected in dr...
+2	Regular	5	Warrantable	Track	27-Dec-2020 18:30	Oil leakage observed from brake drum drain plu...	Oil leakage Observed From Brake Drum Drain Plu...	Transmission	OIL IMMERSED BRAKE-FD0210	There is no change in brake drum,brake assly,d...	...	28-Dec-2020 18:31	28-Dec-2020 18:31	31-Dec-2020 13:18	13-Jan-2021 12:56	18-Jan-2021 10:45	NaN	23-Jan-2021 02:29	21.0	26.0	Based on COE Remarks Orc has been closed - Car...
+3	Regular	6	NaN	Track	23-Jan-2021 13:17	Battery tray base plate found in bend conditio...	Battery tray base plate found in bend conditio...	Frontal-System	NaN	NaN	...	16-Feb-2021 13:19	16-Feb-2021 13:19	17-Feb-2021 19:00	NaN	NaN	NaN	NaN	NaN	NaN	Based on COE remarks , Orc has been Obsoleted
+4	Regular	6	NaN	Field	05-10-2020 12:00:00 AM	Y-NXT 28 HP 4WD TRACTOR OBSERVED MORE VIBRATIO...	ORC's seprated for Steering and fender aggrega...	Tractor-System	STEERING-FD060207	Direction given by Gupta Sir to adopt Universa...	...	07-Oct-2020 20:03	08-Oct-2020 01:42	08-Oct-2020 22:58	NaN	NaN	NaN	NaN	NaN	NaN	ORC's seprated for Steering and fender aggrega...
+5 rows × 25 columns
+
+data.describe()
+Severity of Problem	Solution Implementation (Step-6)	Conclusion and Tracking (Step 7)	Time to Solution Release (days)	Time to Close the ORC (days)
+count	149.000000	0.0	0.0	127.000000	106.000000
+mean	5.389262	NaN	NaN	26.118110	42.283019
+std	1.239613	NaN	NaN	18.628198	28.526597
+min	3.000000	NaN	NaN	3.000000	10.000000
+25%	5.000000	NaN	NaN	14.000000	23.000000
+50%	5.000000	NaN	NaN	20.000000	34.000000
+75%	6.000000	NaN	NaN	39.000000	58.750000
+max	9.000000	NaN	NaN	97.000000	171.000000
+data.dtypes
+Project Type                                   object
+Severity of Problem                             int64
+Warrantable/Non Warrantable                    object
+Type of ORC                                    object
+Failure Date                                   object
+Problem Definition (Step-1)                    object
+Observations (Step-2)                          object
+System                                         object
+Sub System                                     object
+Under Analysis (Step-3)                        object
+Solution Identification & Release (Step-4)     object
+Solution Validation & ORC Closure (Step-5)     object
+Solution Implementation (Step-6)              float64
+Conclusion and Tracking (Step 7)              float64
+ORC Current Status                             object
+Date of ORC Creation                           object
+Date to reach at Step 2                        object
+Date to reach at Step 3                        object
+Date to reach at Step 4                        object
+Date to reach at Step 5                        object
+Date to reach at Step 6                        object
+Date to reach at Step 7                        object
+Time to Solution Release (days)               float64
+Time to Close the ORC (days)                  float64
+Remarks                                        object
+dtype: object
+data.isnull().sum()
+Project Type                                    0
+Severity of Problem                             0
+Warrantable/Non Warrantable                    23
+Type of ORC                                     0
+Failure Date                                    0
+Problem Definition (Step-1)                     0
+Observations (Step-2)                          30
+System                                          5
+Sub System                                     73
+Under Analysis (Step-3)                        26
+Solution Identification & Release (Step-4)    125
+Solution Validation & ORC Closure (Step-5)      0
+Solution Implementation (Step-6)              149
+Conclusion and Tracking (Step 7)              149
+ORC Current Status                              0
+Date of ORC Creation                            0
+Date to reach at Step 2                         1
+Date to reach at Step 3                         7
+Date to reach at Step 4                        22
+Date to reach at Step 5                        22
+Date to reach at Step 6                       131
+Date to reach at Step 7                        43
+Time to Solution Release (days)                22
+Time to Close the ORC (days)                   43
+Remarks                                        26
+dtype: int64
+Project Type
+
+data=data. rename(columns = {'Project Type':'Projecttype'})
+data.Projecttype.values[0]
+'Regular'
+data.Projecttype.unique()
+array(['Regular'], dtype=object)
+data.Projecttype.isnull().sum()
+0
+data.Projecttype.value_counts()
+Regular    149
+Name: Projecttype, dtype: int64
+Severity of Problem
+
+data=data. rename(columns = {'Severity of Problem':'Severity_of_Problem'})
+data.Severity_of_Problem.values
+data.Severity_of_Problem.isnull().sum()
+0
+data.Severity_of_Problem.describe()
+count    149.000000
+mean       5.389262
+std        1.239613
+min        3.000000
+25%        5.000000
+50%        5.000000
+75%        6.000000
+max        9.000000
+Name: Severity_of_Problem, dtype: float64
+Warrantable/Non Warrantable
+
+data=data.rename(columns = {'Warrantable/Non Warrantable':'Warrantable_Non_Warrantable'})
+data.Warrantable_Non_Warrantable.values[0]
+data.Warrantable_Non_Warrantable.unique()
+array(['Regular'], dtype=object)
+data.Warrantable_Non_Warrantable.isnull().sum()
+data.Warrantable_Non_Warrantable.value_counts()
+Regular    149
+Name: Projecttype, dtype: int64
+Type of ORC
+
+data=data.rename(columns = {'Type of ORC':'Type_of_ORC'})
+data.Type_of_ORC.values[0]
+'Track'
+data.Type_of_ORC.unique()
+array(['Track', 'Build', 'Field', 'Tear-Down', 'LAB'], dtype=object)
